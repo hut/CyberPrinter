@@ -24,20 +24,37 @@ group = iGEM
 resetWells
 resetSpots"""
     footer = "end"
-    content = []
-    for partition in zip(*[iter(spots)]*10):
-        content.append("t A1   " + " ".join("%d,%d" % spot for spot in partition))
-    return "\n".join([header] + content + [footer])
+    return "\n".join([header] + all_lines + [footer])
 
-spots = []
+class Line(object):
+    def __init__(self):
+        self.maxlen = 255
+        self.content = "t A1  "
+        self.count = 0
+
+    def add(self, x, y):
+        # add 1 to each coordinate, as AFAIK the program starts counting at 1
+        new_coord = " %d,%d" % (x + 1, y + 1)
+        if len(self.content) + len(new_coord) > self.maxlen:
+            raise ValueError("Line too long, refusing to add coordinate")
+        self.content += new_coord
+        self.count += 1
+
+all_lines = []
+line = Line()
 
 for x in range(im.size[0]):
     for y in range(im.size[1]):
         color = get_color(pixels[x, y])
         if color:
-            spots.append((x + 1, y + 1))  # the program starts counting at 1, AFAIK
+            try:
+                line.add(x, y)
+            except ValueError:
+                all_lines.append(line.content)
+                line = Line()
+if line.count > 0:
+    all_lines.append(line.content)
 
-
-spotfile = make_spotfile(spots)
+spotfile = make_spotfile(all_lines)
 spotfile = spotfile.replace("\n", "\r\n") # Windows Line Endings
 print(spotfile)
