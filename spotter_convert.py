@@ -31,30 +31,82 @@ class Line(object):
         self.maxlen = 255
         self.content = "t A1  "
         self.count = 0
+        self.spots = []
+
+    def get_line(self):
+        return "t A1   " + " ".join(self.format_spot(spot) for spot in self.spots)
 
     def add(self, x, y):
         # add 1 to each coordinate, as AFAIK the program starts counting at 1
-        new_coord = " %d,%d" % (x + 1, y + 1)
+        spot = [x + 1, y + 1, 0, 0]
         if len(self.content) + len(new_coord) > self.maxlen:
             raise ValueError("Line too long, refusing to add coordinate")
         self.content += new_coord
         self.count += 1
 
-all_lines = []
-line = Line()
+class Spot(list):
+    def _get_start_x(self): return self[0]
+    def _set_start_x(self, value): self[0] = value
+    def _get_stop_x(self): return self[1]
+    def _set_stop_x(self, value): self[1] = value
+    startx = property(_get_start_x, _set_start_x)
+    stopx = property(_get_stop_x, _set_stop_x)
+    def _get_start_y(self): return self[2]
+    def _set_start_y(self, value): self[2] = value
+    def _get_stop_y(self): return self[3]
+    def _set_stop_y(self, value): self[3] = value
+    starty = property(_get_start_y, _set_start_y)
+    stopy = property(_get_stop_y, _set_stop_y)
+    def __str__(self):
+        out = ""
+        if self.startx == self.stopx:
+            out += str(self.startx)
+        else:
+            out += "%d:%d" % (self.startx, self.stopx)
+        out += ','
+        if self.starty == self.stopy:
+            out += str(self.starty)
+        else:
+            out += "%d:%d" % (self.starty, self.stopy)
+        return out
+
+def reduce2(function, sequence):
+    result = [sequence[0]]
+    index = 1
+    for item in sequence[1:]:
+        a, b = result[-1], item
+        del result[-1]
+        result.extend(function(a, b))
+    return result
+
+def squash_along_y(spot1, spot2):
+    if spot1.startx == spot2.startx and spot1.stopx == spot2.stopx and spot1.stopy == spot2.starty - 1:
+        return [Spot([spot1.startx, spot1.stopx, spot1.starty, spot2.stopy])]
+    else:
+        return [spot1, spot2]
+
+def squash_along_x(spot1, spot2):
+    if spot1.starty == spot2.starty and spot1.stopy == spot2.stopy and spot1.stopx == spot2.startx - 1:
+        return [Spot([spot1.startx, spot2.stopx, spot1.starty, spot1.stopy])]
+    else:
+        return [spot1, spot2]
+
+spots = []
 
 for x in range(im.size[0]):
     for y in range(im.size[1]):
         color = get_color(pixels[x, y])
         if color:
-            try:
-                line.add(x, y)
-            except ValueError:
-                all_lines.append(line.content)
-                line = Line()
-if line.count > 0:
-    all_lines.append(line.content)
+            spots.append(Spot([x, x, y, y]))
 
-spotfile = make_spotfile(all_lines)
-spotfile = spotfile.replace("\n", "\r\n") # Windows Line Endings
-print(spotfile)
+print(" ".join(map(str, spots)))
+print()
+print()
+print(" ".join(map(str, reduce2(squash_along_y, spots))))
+print()
+print()
+print(" ".join(map(str, reduce2(squash_along_x, reduce2(squash_along_y, spots)))))
+
+#spotfile = make_spotfile(all_lines)
+#spotfile = spotfile.replace("\n", "\r\n") # Windows Line Endings
+#print(spotfile)
