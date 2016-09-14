@@ -29,10 +29,10 @@ resetSpots"""
     result = header + "\n"
     line_lengthtest = line = linestart
     for spot in spots:
-        line_lengthtest += str(spot)
+        line_lengthtest += " " + str(spot)
         if len(line_lengthtest) > maxlen:
             result += line + "\n"
-            line_lengthtest = line = linestart
+            line_lengthtest = line = linestart + " " + str(spot)
         else:
             line = line_lengthtest
     if line != linestart:
