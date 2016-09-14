@@ -19,12 +19,28 @@ def get_color(colortuple):
     return 0 # white
 
 def make_spotfile(spots):
+    maxlen = 255
+    linestart = "t A1  "
     header = """mtp = MTP_Sys
 group = iGEM
 resetWells
 resetSpots"""
     footer = "end"
-    return "\n".join([header] + all_lines + [footer])
+    result = header + "\n"
+    line_lengthtest = line = linestart
+    for spot in spots:
+        line_lengthtest += str(spot)
+        if len(line_lengthtest) > maxlen:
+            result += line + "\n"
+            line_lengthtest = line = linestart
+        else:
+            line = line_lengthtest
+    if line != linestart:
+        result += line + "\n"
+
+    result += footer
+    result = result.replace("\n", "\r\n") # Windows Line Ending
+    return result
 
 class Line(object):
     def __init__(self):
@@ -99,14 +115,14 @@ for x in range(im.size[0]):
         if color:
             spots.append(Spot([x, x, y, y]))
 
-print(" ".join(map(str, spots)))
-print()
-print()
-print(" ".join(map(str, reduce2(squash_along_y, spots))))
-print()
-print()
-print(" ".join(map(str, reduce2(squash_along_x, reduce2(squash_along_y, spots)))))
+#print(" ".join(map(str, spots)))
+#print()
+#print()
+#print(" ".join(map(str, reduce2(squash_along_y, spots))))
+#print()
+#print()
+#print(" ".join(map(str, reduce2(squash_along_x, reduce2(squash_along_y, spots)))))
 
-#spotfile = make_spotfile(all_lines)
-#spotfile = spotfile.replace("\n", "\r\n") # Windows Line Endings
-#print(spotfile)
+squashed_spots = reduce2(squash_along_x, reduce2(squash_along_y, spots))
+
+print(make_spotfile(squashed_spots))
