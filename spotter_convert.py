@@ -21,25 +21,35 @@ def get_color(colortuple):
 
 def make_spotfile(spots):
     maxlen = 254
+    lines = []
     linestart = "t A1  "
     header = """mtp = MTP_Sys
 group = iGEM
 resetWells
 resetSpots"""
     footer = "end"
-    result = header + "\n"
+    result = ""
     line_lengthtest = line = linestart
     for spot in spots:
         line_lengthtest += " " + str(spot)
         if len(line_lengthtest) > maxlen:
-            result += line + "\n"
+            lines.append(line + "\n")
             line_lengthtest = line = linestart + " " + str(spot)
         else:
             line = line_lengthtest
     if line != linestart:
-        result += line + "\n"
+        lines.append(line + "\n")
 
-    result += footer
+    first = True
+    for line in lines:
+        if first:
+            first = False
+        else:
+            result += "\n\n\n\n"
+        result += header
+        result += line
+        result += footer
+
     result = result.replace("\n", "\r\n") # Windows Line Ending
     return result
 
