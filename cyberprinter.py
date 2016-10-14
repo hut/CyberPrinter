@@ -26,7 +26,7 @@ def make_spotfile(spots):
     header = """mtp = MTP_Sys
 group = Katja_2
 resetWells
-resetSpots"""
+resetSpots\n"""
     footer = "end"
     result = ""
     line_lengthtest = line = linestart
