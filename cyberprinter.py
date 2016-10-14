@@ -24,7 +24,7 @@ def make_spotfile(spots):
     lines = []
     linestart = "t A1  "
     header = """mtp = MTP_Sys
-group = iGEM
+group = Katja_2
 resetWells
 resetSpots"""
     footer = "end"

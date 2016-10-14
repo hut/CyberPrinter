@@ -1,0 +1,65 @@
+WorkPlate
+{
+
+ MicroTiterPlate MTP_Sys
+ {
+        x = 320.38;       y =  52.13;       z =  48.20;
+     DimX = 128.00;    DimY =  86.00;    DimZ =  15.00;
+       nx =  12;         ny =   8;
+ wellOffsetX =  14.00; wellOffsetY =  10.00;
+    wellDimX =   7.00;    wellDimY =   7.00;    wellDepth =   8.00;
+   wellDistX =   9.00;   wellDistY =   9.00;
+    wellType = circle;
+ }
+
+ TargetGroup Katja_2
+ {
+        x = 230.60;       y =  14.00;       z =   0.00;
+     DimX =  25.00;    DimY =  75.00;    DimZ =   1.00;
+      offsetX =   4.500;        offsetY =  25.000;
+  offsetRight =   4.500;   offsetBottom =   5.000;
+  ZSensorOffX =  14.50;    ZSensorOffY =  41.00;
+     rows =   1;    columns =   1;
+  distRow =   0.00; distCol =   1.60;
+ }
+
+ Target Yellow
+ {
+        x = 205.60;       y =  14.00;       z =  45.05;
+     DimX =  25.00;    DimY =  75.00;    DimZ =   1.00;
+      offsetX =   0.100;        offsetY =   0.100;
+  offsetRight =   0.100;   offsetBottom =   0.100;
+  ZSensorOffX =  12.50;    ZSensorOffY =  37.50;
+ }
+
+ MicroTiterPlate MTP_ExtraWash
+ {
+        x = 356.60;       y = 178.43;       z =  59.00;
+     DimX =  35.00;    DimY =  47.00;    DimZ =  15.00;
+       nx =   2;         ny =   4;
+ wellOffsetX =  14.00; wellOffsetY =  10.00;
+    wellDimX =   7.00;    wellDimY =   7.00;    wellDepth =  10.00;
+   wellDistX =   9.00;   wellDistY =   9.00;
+    wellType = circle;
+ }
+ SpotPlan
+ {
+
+   Katja_2
+   {
+     BlockRows    =    1;
+     BlockCols    =    1;
+     BlockRowDist =    1.000;
+     BlockColDist =    1.000;
+     SpotRows    =   50;
+     SpotCols    =   40;
+     SpotRowDist =    0.400;
+     SpotColDist =    0.400;
+     Droplets    =    1;
+   }
+ }
+ ZLevelList // for TargetGroup Elements
+ {
+  Katja_2_0101 = 45.07;
+ }
+}
