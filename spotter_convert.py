@@ -124,6 +124,8 @@ for x in range(im.size[0]):
 #print()
 #print(" ".join(map(str, reduce2(squash_along_x, reduce2(squash_along_y, spots)))))
 
-squashed_spots = reduce2(squash_along_x, reduce2(squash_along_y, spots))
+squashed_along_y = reduce2(squash_along_y, spots)
+squashed_along_y.sort(key=lambda spot: (spot.starty, spot.stopy, spot.startx, spot.stopx))
+squashed_spots = reduce2(squash_along_x, squashed_along_y)
 
 print(make_spotfile(squashed_spots))
