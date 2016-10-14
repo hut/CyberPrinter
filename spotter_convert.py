@@ -10,6 +10,7 @@ args = parser.parse_args()
 from PIL import Image
 im = Image.open(args.image_file) #Can be many different formats.
 pixels = im.load()
+max_y = im.size[1] - 1
 
 
 def get_color(colortuple):
@@ -19,7 +20,7 @@ def get_color(colortuple):
     return 0 # white
 
 def make_spotfile(spots):
-    maxlen = 255
+    maxlen = 254
     linestart = "t A1  "
     header = """mtp = MTP_Sys
 group = iGEM
@@ -111,7 +112,7 @@ spots = []
 
 for x in range(im.size[0]):
     for y in range(im.size[1]):
-        color = get_color(pixels[x, y])
+        color = get_color(pixels[x, max_y - y])
         if color:
             spots.append(Spot([x, x, y, y]))
 
